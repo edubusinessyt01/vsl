@@ -46,7 +46,7 @@
                 width: 100vw;
                 height: 56.25vw; /* Proporção 16:9 */
             }
-            .play-icon { width: 200px; height: 70px; }
+            .play-icon { width: 250px; height: 90px; }
         }
     </style>
 </head>
@@ -105,9 +105,9 @@
                 const currentTime = player.currentTime();
                 const duration = player.duration();
                 if (duration) {
-                    const percent = (currentTime / duration) * 100;
+                    let percent = (currentTime / duration) * 100;
 
-                    // Acelera a barra até 90% do vídeo
+                    // Acelera até 90% do vídeo
                     if (percent < 90) {
                         const acceleratedPercent = percent * 1.8; // Acelera a barra
                         progress.style.width = Math.min(acceleratedPercent, 100) + '%';
