@@ -22,8 +22,10 @@
         }
         .overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.5); z-index: 20; cursor: pointer;
+            transition: opacity 0.2s ease-in-out;
         }
-        .play-icon { width: 300px; height: 100px; }
+        .play-icon { width: 300px; height: 100px; transition: transform 0.1s ease; }
+        .play-icon:active { transform: scale(0.9); } /* Animação de clique */
         @media (max-width: 600px) { .play-icon { width: 200px; height: 70px; } }
         .pause-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
         .video-js { width: 100% !important; height: 100% !important; }
@@ -89,15 +91,15 @@
 
                 // Acelera a barra até 90% do vídeo
                 if (percent < 90) {
-                    const acceleratedPercent = percent * 1.8; // Aceleração inicial de 1.8 vezes
+                    const acceleratedPercent = percent * 1.8;
                     progress.style.width = Math.min(acceleratedPercent, 100) + '%';
                 } else {
-                    // Quando está nos últimos 10%, desacelera a barra
+                    // Desacelera nos últimos 10%
                     const remaining = duration - currentTime;
-                    const finalPercent = percent + (remaining / 10); // Ajusta a largura da barra conforme o tempo restante
+                    const finalPercent = percent + (remaining / 10);
                     progress.style.width = Math.min(finalPercent, 100) + '%';
                 }
-            }, 100); // Atualiza a cada 100ms
+            }, 100);
         });
 
         function toggleVideo() {
@@ -106,4 +108,5 @@
     </script>
 </body>
 </html>
+
 
