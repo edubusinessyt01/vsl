@@ -18,23 +18,42 @@
             width: 100%; height: 10px; position: absolute; bottom: 0; left: 0; z-index: 10;
         }
         .progress {
-            height: 100%; background: rgba(255, 0, 0, 0.8); width: 0; border-radius: 5px; transition: width 0.1s;
+            height: 100%; background: rgba(255, 0, 0, 0.8); width: 0; border-radius: 5px;
         }
         .overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.5); z-index: 20; cursor: pointer;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.5); z-index: 20; cursor: pointer;
             transition: opacity 0.2s ease-in-out;
         }
-        .play-icon { width: 300px; height: 100px; transition: transform 0.1s ease; }
-        .play-icon:active { transform: scale(0.9); } /* Animação de clique */
-        @media (max-width: 600px) { .play-icon { width: 200px; height: 70px; } }
-        .pause-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+        .play-icon {
+            width: 300px; height: 100px; transition: opacity 0.3s ease, transform 0.1s ease;
+        }
+        .play-icon:active { transform: scale(0.9); }
+        .pause-icon {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Mantém as proporções da imagem */
+        }
         .video-js { width: 100% !important; height: 100% !important; }
+
+        @media (max-width: 600px) {
+            .video-container {
+                width: 100vw;
+                height: 56.25vw; /* Proporção 16:9 */
+            }
+            .play-icon { width: 200px; height: 70px; }
+        }
     </style>
 </head>
 <body>
     <div class="video-container">
         <video id="video" class="video-js vjs-default-skin" preload="auto" playsinline>
-            <source src="https://www.youtube-nocookie.com/embed/A6PWu3EH7Xw?autoplay=0&controls=0&disablekb=1&playsinline=1&cc_load_policy=0&showinfo=0&modestbranding=0&rel=0&loop=0&enablejsapi=1&origin=https%3A%2F%2Fvslplay.com&widgetid=1" type="video/youtube">
+            <source src="https://www.youtube-nocookie.com/embed/A6PWu3EH7Xw" type="video/youtube">
             Seu navegador não suporta vídeos HTML5.
         </video>
         <div class="overlay" id="overlay" onclick="toggleVideo()">
@@ -58,8 +77,6 @@
         const player = videojs(videoElement, {
             techOrder: ["youtube"],
             controls: false,
-            sources: [{ src: 'https://www.youtube-nocookie.com/embed/A6PWu3EH7Xw?autoplay=0&controls=0&disablekb=1&playsinline=1&cc_load_policy=0&showinfo=0&modestbranding=0&rel=0&loop=0&enablejsapi=1&origin=https%3A%2F%2Fvslplay.com&widgetid=1', type: 'video/youtube' }],
-            youtube: { rel: 0, showinfo: 0 }
         });
 
         player.ready(() => {
@@ -84,22 +101,27 @@
                 pauseIcon.style.display = 'none';
             });
 
-            setInterval(() => {
+            function updateProgress() {
                 const currentTime = player.currentTime();
                 const duration = player.duration();
-                const percent = (currentTime / duration) * 100;
+                if (duration) {
+                    const percent = (currentTime / duration) * 100;
 
-                // Acelera a barra até 90% do vídeo
-                if (percent < 90) {
-                    const acceleratedPercent = percent * 1.8;
-                    progress.style.width = Math.min(acceleratedPercent, 100) + '%';
-                } else {
-                    // Desacelera nos últimos 10%
-                    const remaining = duration - currentTime;
-                    const finalPercent = percent + (remaining / 10);
-                    progress.style.width = Math.min(finalPercent, 100) + '%';
+                    // Acelera a barra até 90% do vídeo
+                    if (percent < 90) {
+                        const acceleratedPercent = percent * 1.8; // Acelera a barra
+                        progress.style.width = Math.min(acceleratedPercent, 100) + '%';
+                    } else {
+                        // Desacelera nos últimos 10%
+                        const remaining = duration - currentTime;
+                        const finalPercent = percent + (remaining / 10); // Desacelera a barra
+                        progress.style.width = Math.min(finalPercent, 100) + '%';
+                    }
                 }
-            }, 100);
+                requestAnimationFrame(updateProgress);
+            }
+
+            requestAnimationFrame(updateProgress);
         });
 
         function toggleVideo() {
@@ -108,5 +130,6 @@
     </script>
 </body>
 </html>
+
 
 
