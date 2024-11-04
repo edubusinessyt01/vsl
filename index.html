@@ -89,12 +89,13 @@
 
                 // Acelera a barra até 90% do vídeo
                 if (percent < 90) {
-                    progress.style.width = Math.min(percent + 5, 100) + '%'; // Aumenta a largura da barra para 8
+                    const acceleratedPercent = percent * 1.8; // Aceleração inicial de 1.8 vezes
+                    progress.style.width = Math.min(acceleratedPercent, 100) + '%';
                 } else {
                     // Quando está nos últimos 10%, desacelera a barra
                     const remaining = duration - currentTime;
-                    const newPercent = percent + (remaining / 10); // Ajusta a largura da barra conforme o tempo restante
-                    progress.style.width = Math.min(newPercent, 100) + '%';
+                    const finalPercent = percent + (remaining / 10); // Ajusta a largura da barra conforme o tempo restante
+                    progress.style.width = Math.min(finalPercent, 100) + '%';
                 }
             }, 100); // Atualiza a cada 100ms
         });
@@ -105,3 +106,4 @@
     </script>
 </body>
 </html>
+
