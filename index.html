@@ -12,13 +12,16 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0; /* Remover margens */
         }
 
         .video-container {
             position: relative;
-            width: 560px;
-            height: 315px;
-            overflow: hidden;
+            width: 100%; /* Ocupa 100% da largura */
+            max-width: 560px; /* Largura máxima */
+            height: 0; /* Iniciar com altura 0 */
+            padding-bottom: 56.25%; /* Proporção 16:9 */
+            overflow: hidden; /* Evitar que o conteúdo transborde */
         }
 
         iframe {
@@ -152,3 +155,4 @@
     </script>
 </body>
 </html>
+
