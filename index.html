@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video com Barra de Progresso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .video-container {
+            position: relative;
+            width: 560px;
+            height: 315px;
+            overflow: hidden;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: rgba(255, 0, 0, 0.8);
+            width: 0;
+            border-radius: 5px;
+            transition: width 0.1s;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        .play-icon {
+            width: 300px;
+            height: 100px;
+        }
+
+        .pause-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Inicialmente escondido */
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <iframe id="video" src="https://www.youtube.com/embed/A6PWu3EH7Xw?enablejsapi=1&controls=0&showinfo=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="overlay" id="overlay" onclick="toggleVideo()">
+            <img id="playIcon" class="play-icon" src="https://cdn.converteai.net/cc9e4eb4-21db-4180-a9e1-03916c34bb00/2023/01/06/63b88704d13d520009d3ae7f.gif" alt="Play Icon" />
+            <img id="pauseIcon" class="pause-icon" src="https://cdn.converteai.net/cc9e4eb4-21db-4180-a9e1-03916c34bb00/2024/11/04/67284782ef631f0001734292.png" alt="Pause Icon" />
+        </div>
+        <div class="progress-bar" id="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
+
+    <script>
+        const videoIframe = document.getElementById('video');
+        const progress = document.getElementById('progress');
+        const overlay = document.getElementById('overlay');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        let player;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player(videoIframe, {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            playIcon.style.display = 'block'; // Mostrar ícone de play inicialmente
+            pauseIcon.style.display = 'none';  // Garantir que o ícone de pause esteja escondido
+        }
+
+        function toggleVideo() {
+            if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                player.pauseVideo(); // Pausar vídeo
+            } else {
+                overlay.style.opacity = 0; // Ocultar overlay ao iniciar o vídeo
+                player.playVideo(); // Iniciar vídeo
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PAUSED) {
+                overlay.style.opacity = 1; // Manter overlay visível ao pausar
+                playIcon.style.display = 'none'; // Ocultar ícone de play
+                pauseIcon.style.display = 'block'; // Mostrar ícone de pause
+            } else if (event.data === YT.PlayerState.ENDED) {
+                overlay.style.opacity = 1; // Mostrar overlay quando o vídeo terminar
+                playIcon.style.display = 'block'; // Mostrar ícone de play
+                pauseIcon.style.display = 'none'; // Ocultar ícone de pause
+            } else if (event.data === YT.PlayerState.PLAYING) {
+                overlay.style.opacity = 0; // Ocultar overlay se o vídeo estiver tocando
+                playIcon.style.display = 'none'; // Ocultar ícone de play
+                pauseIcon.style.display = 'none'; // Ocultar ícone de pause
+            }
+        }
+
+        setInterval(() => {
+            const duration = player.getDuration();
+            const currentTime = player.getCurrentTime();
+            const speedFactor = 2.5; // Acelerar em 2,5 vezes
+            const percent = Math.min(((currentTime * speedFactor) / duration) * 100, 100);
+            progress.style.width = percent + '%';
+        }, 1000);
+    </script>
+</body>
+</html>
