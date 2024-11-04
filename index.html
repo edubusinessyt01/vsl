@@ -12,16 +12,16 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0; /* Remover margens */
+            margin: 0; /* Remover margens do body */
         }
 
         .video-container {
             position: relative;
-            width: 100%; /* Ocupa 100% da largura */
-            max-width: 560px; /* Largura máxima */
-            height: 0; /* Iniciar com altura 0 */
-            padding-bottom: 56.25%; /* Proporção 16:9 */
-            overflow: hidden; /* Evitar que o conteúdo transborde */
+            width: 80vw; /* Usar 80% da largura da viewport */
+            height: 45vw; /* Altura proporcional à largura */
+            max-width: 560px; /* Limitar a largura máxima */
+            max-height: 315px; /* Limitar a altura máxima */
+            overflow: hidden;
         }
 
         iframe {
@@ -155,4 +155,5 @@
     </script>
 </body>
 </html>
+
 
